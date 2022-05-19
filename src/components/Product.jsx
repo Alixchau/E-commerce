@@ -17,7 +17,7 @@ const Info = styled.div`
   justify-content: center;
   transition: all 0.5s ease;
   cursor: pointer;
-`
+`;
 const Container = styled.div`
   flex:1;
   margin: 5px;
@@ -32,19 +32,18 @@ const Container = styled.div`
   &:hover ${Info}{
     opacity: 1;
   }
-`
+`;
 const Circle = styled.div`
   width: 200px;
   height: 200px;
   border-radius: 50%;
   background-color: #fff;
   position: absolute;
-
-`
+`;
 const Image = styled.img`
   height: 70%;
   z-index: 2;
-`
+`;
 const Icon = styled.div`
   width: 40px;
   height: 40px;
@@ -60,7 +59,7 @@ const Icon = styled.div`
     background-color: #e9f5f5;
     transform: scale(1.1);
   }
-`
+`;
 
 const Product = ({ item }) => {
   return (

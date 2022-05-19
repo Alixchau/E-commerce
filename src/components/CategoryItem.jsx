@@ -6,12 +6,12 @@ const Container = styled.div`
   margin: 3px;
   height: 70vh;
   position: relative;
-`
+`;
 const Image = styled.img`
   width: 100%;
   height: 100%;
   object-fit: cover;
-`
+`;
 const Info = styled.div`
   //put child info(absolute) on top of parent container(relative)
   position: absolute;
@@ -23,11 +23,11 @@ const Info = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-`
+`;
 const Title = styled.h1`
   color: white;
   margin-bottom: 20px;
-`
+`;
 const Button = styled.button`
   border: none;
   padding: 10px;
@@ -35,7 +35,7 @@ const Button = styled.button`
   color: gray;
   cursor: pointer;
   font-weight: 600;
-`
+`;
 
 const CategoryItem = ({ item }) => {
   return (
