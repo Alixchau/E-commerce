@@ -1,13 +1,16 @@
-import styled from 'styled-components'
+import styled from 'styled-components';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import PhoneAndroidIcon from '@mui/icons-material/PhoneAndroid';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import RoomIcon from '@mui/icons-material/Room';
+import { mobile } from '../responsive';
 
 const Container = styled.div`
   display: flex;
+  background-color: #E4F9F5;
+  ${mobile({flexDirection:"column"})}
 `;
 const Left = styled.div`
   flex: 1;
@@ -54,6 +57,7 @@ const ListItem = styled.li`
 const Right = styled.div`
   flex: 1;
   padding: 20px;
+  ${mobile({backgroundColor:"#F6F6F6"})}
 ;
 `
 const ContactItem = styled.div`
@@ -79,7 +83,7 @@ const Footer = () => {
           <SocialIcon color="E4405F" >
             <InstagramIcon/>
           </SocialIcon>
-          <SocialIcon color="E4405F" >
+          <SocialIcon color="55ACEE" >
             <TwitterIcon />
           </SocialIcon>
         </SocialContainer>
