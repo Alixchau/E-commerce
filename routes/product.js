@@ -57,7 +57,7 @@ router.get("/", verifyTokenAndAuthorization, async (req, res) => {
   const queryNew = req.query.new; //if query indicate new is true, only return first 5 products
   const queryCategory = req.query.category;
   try {
-    let products;
+    var products;
     if(queryNew){
       products = await Product.find().sort({createdAt: -1}).limit(1);
     }else if(queryCategory){
