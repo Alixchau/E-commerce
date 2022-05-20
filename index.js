@@ -18,6 +18,7 @@ app.use(express.json());//enable app to pass json
 app.use("/api/auth", authRoute);
 app.use("/api/users", usersRoute);
 app.use("/api/products", productsRoute);
+app.use("/api/carts", cartsRoute);
 app.use("/api/orders", ordersRoute);
 
 
