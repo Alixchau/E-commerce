@@ -38,12 +38,23 @@ router.delete("/:id", verifyTokenAndAuthorization, async (req, res)=>{
   }
 });
 
-//GET USER
+//GET USER (for admin)
 router.get("/find/:id", verifyTokenAndAdmin, async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
     const { password, ...others } = user._doc;
     res.status(200).json(others);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+//GET ALL USER (for admin)
+router.get("/", verifyTokenAndAdmin, async (req, res) => {
+  const query = req.query.new; //if query indicate new is true, only return first 5 users
+  try {
+    const users = query ? await User.find().sort({_id:-1}).limit(5) : User.find(); //sort id descending order
+    res.status(200).json(users);
   } catch (err) {
     res.status(500).json(err);
   }
