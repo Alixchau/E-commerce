@@ -5,12 +5,19 @@ import Footer from "../components/Footer";
 import RemoveIcon from '@mui/icons-material/Remove';
 import AddIcon from '@mui/icons-material/Add';
 import { mobile } from "../responsive";
+import { useSelector } from "react-redux";
+import StripeCheckout from "react-stripe-checkout";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
+const PUBLISHABLE_stripekey = process.env.PUBLISHABLE_stripekey;
 
 const Container = styled.div`
 `
 const Wrapper = styled.div`
  padding: 20px;
- ${mobile({padding:"10px"})}
+ ${mobile({ padding: "10px" })}
 
 `;
 
@@ -38,13 +45,13 @@ const TopText = styled.span`
   text-decoration: underline;
   cursor: pointer;
   margin: 0px 10px;
-  ${mobile({display:"none"})}
+  ${mobile({ display: "none" })}
 `;
 
 const Bottom = styled.div`
   display: flex;
   justify-content: space-between;
-  ${mobile({flexDirection:"column"})}
+  ${mobile({ flexDirection: "column" })}
 
 `;
 const Info = styled.div`
@@ -54,7 +61,7 @@ const Info = styled.div`
 const Product = styled.div`
   display: flex;
   justify-content: space-between;
-  ${mobile({flexDirection:"column"})}
+  ${mobile({ flexDirection: "column" })}
 `;
 const ProductDetail = styled.div`
   flex: 2;
@@ -93,12 +100,12 @@ const ProductAmountContainer = styled.div`
 const ProductAmount = styled.div`
   font-size: 24px;
   margin: 5px;
-  ${mobile({margin:"4px 50px"})}
+  ${mobile({ margin: "4px 50px" })}
 `;
 const ProductPrice = styled.div`
   font-size: 30px;
   font-weight: 200;
-  ${mobile({marginBottom:"20px"})}
+  ${mobile({ marginBottom: "20px" })}
 `;
 const Hr = styled.hr`
   background-color: #eee;
@@ -136,6 +143,32 @@ const Button = styled.button`
 `;
 
 const Cart = () => {
+  const cart = useSelector(state => state.cart);
+  const [stripeToken, setStripeToken] = useState(null);
+  const navigate = useNavigate();
+
+  //generate stripeToken
+  const onToken = (token) => {
+    setStripeToken(token);
+  };
+
+//when there's stripeToken, make backend request
+   useEffect(() => {
+    const makeBackendRequest = async () => {
+      try {
+        const response = await axios.post(
+          "http://localhost:5000/api/checkout/payment", {
+          tokenId: stripeToken.id,
+          amount: cart.total * 100,
+        });
+        navigate("/success", {data:response.data});
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    stripeToken && makeBackendRequest(); //only make request if there's an stripe token
+  }, [stripeToken, cart.total, navigate]);
+
   return (
     <Container>
       <Navbar />
@@ -153,34 +186,38 @@ const Cart = () => {
         </Top>
         <Bottom>
           <Info>
-            <Product>
-              <ProductDetail>
-                <Image src="https://www.prada.com/content/dam/pradanux_products/U/UCS/UCS319/1YOTF010O/UCS319_1YOT_F010O_S_182_SLF.png" />
-                <Details>
-                  <ProductName><b>Product:</b> T shirt</ProductName>
-                  <ProductId><b>ID:</b> 654321</ProductId>
-                  <ProductColor color="black" />
-                  <ProductSize><b>Size:</b> 37.5</ProductSize>
-                </Details>
-              </ProductDetail>
-              <PriceDetail>
-                <ProductAmountContainer>
-                  <RemoveIcon />
-                  <ProductAmount>1</ProductAmount>
-                  <AddIcon />
-                </ProductAmountContainer>
-                <ProductPrice>
-                  $ 30
-                </ProductPrice>
-              </PriceDetail>
-            </Product>
+            {
+              cart.products.map(product => (
+                <Product>
+                  <ProductDetail>
+                    <Image src={product.img} />
+                    <Details>
+                      <ProductName><b>Product:</b> {product.title}</ProductName>
+                      <ProductId><b>ID:</b> {product._id}</ProductId>
+                      <ProductColor color={product.color} />
+                      <ProductSize><b>Size:</b> {product.size}</ProductSize>
+                    </Details>
+                  </ProductDetail>
+                  <PriceDetail>
+                    <ProductAmountContainer>
+                      <RemoveIcon />
+                      <ProductAmount>{product.quantity}</ProductAmount>
+                      <AddIcon />
+                    </ProductAmountContainer>
+                    <ProductPrice>
+                      $ {product.price * product.quantity}
+                    </ProductPrice>
+                  </PriceDetail>
+                </Product>
+              ))
+            }
             <Hr />
           </Info>
           <Summary>
             <SummaryTitle>ORDER SUMMARY</SummaryTitle>
             <SummaryItem>
               <SummaryItemText>Subtotal</SummaryItemText>
-              <SummaryItemPrice>$ 80</SummaryItemPrice>
+              <SummaryItemPrice>$ {cart.total}</SummaryItemPrice>
             </SummaryItem>
             <SummaryItem>
               <SummaryItemText>Estimated Shipping</SummaryItemText>
@@ -192,9 +229,20 @@ const Cart = () => {
             </SummaryItem>
             <SummaryItem type="total">
               <SummaryItemText >Total</SummaryItemText>
-              <SummaryItemPrice>$ 80</SummaryItemPrice>              
+              <SummaryItemPrice>$ {cart.total}</SummaryItemPrice>
             </SummaryItem>
-            <Button>CHECKOUT NOW</Button>
+            <StripeCheckout
+              name='LOLA Shop'
+              billingAddress
+              shippingAddress
+              description={`Your total is $ ${cart.total}`}
+              amount={cart.total * 100}
+              token={onToken}
+              stripeKey={PUBLISHABLE_stripekey}
+            >
+              <Button >CHECKOUT NOW</Button>
+
+            </StripeCheckout>
           </Summary>
         </Bottom>
       </Wrapper>

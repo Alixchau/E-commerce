@@ -8,7 +8,10 @@ import AddIcon from '@mui/icons-material/Add';
 import { mobile } from "../responsive";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { addProduct } from "../redux/cartRedux";
+import { useDispatch } from "react-redux";
 import axios from "axios";
+
 
 const Container = styled.div``
 const Wrapper = styled.div`
@@ -110,6 +113,10 @@ const Button = styled.button`
 const Product = () => {
   const { id } = useParams();
   const [product, setProduct] = useState({});
+  const [quantity, setQuantity] = useState(1);
+  const [color, setColor] = useState("");
+  const [size, setSize] = useState("");
+  const dispactch = useDispatch();
 
   useEffect(() => {
     const getProduct = async () => {
@@ -122,6 +129,19 @@ const Product = () => {
     }
     getProduct();
   }, [id]);
+
+  const handleQuantity = (type) =>{
+    if(type === "decrease"){
+      setQuantity( quantity > 1 ? quantity - 1 : quantity);
+    }else{
+      setQuantity(quantity + 1);
+    }
+  }
+
+  const handleAddCart = () =>{
+    //update cart
+    dispactch(addProduct({...product, quantity, color, size}));
+  }
   return (
     <Container>
       <Navbar />
@@ -140,7 +160,7 @@ const Product = () => {
               <FilterTitle>Color</FilterTitle>
               {
                 product.color?.map((c) =>
-                  <FilterColor color={c} key={c} />
+                  <FilterColor color={c} key={c} onClick={()=>setColor(c)}/>
                 )
               }
 
@@ -150,20 +170,20 @@ const Product = () => {
               <FilterSize>
               {
                 product.size?.map((s)=>
-                <FilterSizeOption key={s}>{s}</FilterSizeOption>
+                <FilterSizeOption key={s} onChange={(e)=>setSize(e.target.value)}>{s}</FilterSizeOption>
                 )
-              }
+              }decreaseinc
               </FilterSize>
             </Filter>
           </FilterContainer>
 
           <AddContainer>
             <AmountContainer>
-              <RemoveIcon />
-              <Amount>1</Amount>
-              <AddIcon />
+              <RemoveIcon onClick={()=>handleQuantity("decrease")}/>
+              <Amount>{quantity}</Amount>
+              <AddIcon onClick={()=>handleQuantity("increase")}/>
             </AmountContainer>
-            <Button>ADD TO CART</Button>
+            <Button onClick={handleAddCart}>ADD TO CART</Button>
           </AddContainer>
 
         </InfoContainer>
