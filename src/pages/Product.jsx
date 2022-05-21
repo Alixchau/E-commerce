@@ -6,12 +6,15 @@ import Footer from "../components/Footer";
 import RemoveIcon from '@mui/icons-material/Remove';
 import AddIcon from '@mui/icons-material/Add';
 import { mobile } from "../responsive";
+import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const Container = styled.div``
 const Wrapper = styled.div`
   padding: 50px;
   display: flex;
-  ${mobile({padding:"10px", flexDirection:"column"})}
+  ${mobile({ padding: "10px", flexDirection: "column" })}
 
 `;
 const ImgContainer = styled.div`
@@ -22,13 +25,13 @@ const Image = styled.img`
   width: 100%;
   height: 60vh;
   object-fit: cover;
-  ${mobile({height:"40vh"})}
+  ${mobile({ height: "40vh" })}
 `;
 
 const InfoContainer = styled.div`
   flex: 1;
   padding: 0 50px;
-  ${mobile({padding:"10px"})}
+  ${mobile({ padding: "10px" })}
 `;
 const Title = styled.h1`
   font-weight: 200;
@@ -45,7 +48,7 @@ const FilterContainer = styled.div`
   margin: 30px 0;
   display: flex;
   justify-content: space-between;
-  ${mobile({width:"100%"})}
+  ${mobile({ width: "100%" })}
 `;
 const Filter = styled.div`
   display: flex;
@@ -60,7 +63,7 @@ const FilterColor = styled.span`
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background-color: ${props=>props.color};
+  background-color: ${props => props.color};
   margin: 0 5px;
   cursor: pointer;
 `;
@@ -75,7 +78,7 @@ const AddContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  ${mobile({width:"100%"})}
+  ${mobile({ width: "100%" })}
 `;
 const AmountContainer = styled.div`
   display: flex;
@@ -105,43 +108,60 @@ const Button = styled.button`
 `;
 
 const Product = () => {
+  const { id } = useParams();
+  const [product, setProduct] = useState({});
+
+  useEffect(() => {
+    const getProduct = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5000/api/products/find/${id}`);
+        setProduct(response.data);
+      } catch (error) {
+
+      }
+    }
+    getProduct();
+  }, [id]);
   return (
     <Container>
       <Navbar />
       <Announcement />
       <Wrapper>
         <ImgContainer>
-          <Image src="https://d3o2e4jr3mxnm3.cloudfront.net/Mens-Jake-Guitar-Vintage-Crusher-Tee_68382_1_lg.png" />
+          <Image src={product.img} />
         </ImgContainer>
         <InfoContainer>
-          <Title>Jean</Title>
-          <Desc>aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehend</Desc>
-          <Price>$20</Price>
+          <Title>{product.Title}</Title>
+          <Desc>{product.desc}</Desc>
+          <Price>${product.price}</Price>
 
           <FilterContainer>
             <Filter>
               <FilterTitle>Color</FilterTitle>
-              <FilterColor color="black" />
-              <FilterColor color="darkblue" />
-              <FilterColor color="gray" />
+              {
+                product.color?.map((c) =>
+                  <FilterColor color={c} key={c} />
+                )
+              }
+
             </Filter>
             <Filter>
               <FilterTitle>Size</FilterTitle>
               <FilterSize>
-                <FilterSizeOption>XS</FilterSizeOption>
-                <FilterSizeOption>S</FilterSizeOption>
-                <FilterSizeOption>M</FilterSizeOption>
-                <FilterSizeOption>L</FilterSizeOption>
-                <FilterSizeOption>XL</FilterSizeOption>
+              {
+                product.size?.map((s)=>
+                <FilterSizeOption key={s}>{s}</FilterSizeOption>
+                )
+              }
               </FilterSize>
             </Filter>
           </FilterContainer>
 
           <AddContainer>
             <AmountContainer>
-              <RemoveIcon/>
+              <RemoveIcon />
               <Amount>1</Amount>
-              <AddIcon/>
+              <AddIcon />
             </AmountContainer>
             <Button>ADD TO CART</Button>
           </AddContainer>
