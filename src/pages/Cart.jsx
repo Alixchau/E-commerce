@@ -11,7 +11,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const PUBLISHABLE_stripekey = process.env.PUBLISHABLE_stripekey;
+const PUBLISHABLE_stripekey = "pk_test_51L1ck6D2bTqVrtoS5iNwhb3MsPmh7VJHN5TBvMbrD6tFjKHBZa7MsmT3fONAkL7vt8tRqcQMAGOs8smVastBym1R00DYOCJf4V";
 
 const Container = styled.div`
 `
@@ -161,11 +161,15 @@ const Cart = () => {
           tokenId: stripeToken.id,
           amount: cart.total * 100,
         });
-        navigate("/success", {data:response.data});
+        navigate("/success", {state:{ //pass state to success page
+          stripeData:response.data,
+          cart:cart 
+        }}
+        );
       } catch (error) {
         console.log(error);
       }
-    }
+    };
     stripeToken && makeBackendRequest(); //only make request if there's an stripe token
   }, [stripeToken, cart.total, navigate]);
 

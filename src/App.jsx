@@ -10,11 +10,10 @@ import Product from "./pages/Product";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Cart from './pages/Cart';
-import Pay from "./pages/Pay";
 import PaymentSuccess from "./pages/PaymentSuccess";
 
 const App = () => {
-  const user = true;
+  const user = false;
   return (
     <Router>
       <Routes>
@@ -24,7 +23,6 @@ const App = () => {
         <Route path="/cart" element={<Cart />} />       
           <Route path="/login" element={user ? <Navigate to="/" /> : <Login />} />        
         <Route path="/register" element={user ? <Navigate to="/" /> : <Register />} />
-        <Route path="/pay" element={<Pay />} />
         <Route path="/success" element={<PaymentSuccess />} />
       </Routes>
     </Router>
