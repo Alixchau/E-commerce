@@ -1,9 +1,8 @@
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { login } from "../redux/apiCalls";
 import { mobile } from "../responsive";
-
 
 const Container = styled.div`
   width: 100vw;
@@ -53,7 +52,7 @@ const Button = styled.button`
   cursor: pointer;
   margin-bottom: 10px;
   &:disabled {
-    color: green;
+    background-color: gray;
     cursor: not-allowed;
   }
 `;
@@ -64,11 +63,15 @@ const Link = styled.a`
   text-decoration: underline;
   cursor: pointer;
 `;
+const Error = styled.span`
+  color: red;
+`;
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const dispactch = useDispatch();
+  const {isFetching, error} = useSelector(state => state.user);
 
   const handleLogin = (e) =>{
     e.preventDefault();
@@ -82,7 +85,8 @@ const Login = () => {
         <Form>
           <Input placeholder="username" onChange={(e)=>setUsername(e.target.value)}/>
           <Input placeholder="password" type="password" onChange={(e)=>setPassword(e.target.value)}/>
-          <Button onClick={handleLogin}>LOGIN</Button>
+          <Button onClick={handleLogin} disabled={isFetching}>LOGIN</Button>
+          {error && <Error>Something went wrong</Error>}
           <Link>FORGOT PASSWORD?</Link>
           <Link>CREATE A NEW ACCOUNT</Link>
         </Form>

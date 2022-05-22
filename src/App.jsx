@@ -11,9 +11,10 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Cart from './pages/Cart';
 import PaymentSuccess from "./pages/PaymentSuccess";
+import { useSelector } from "react-redux";
 
 const App = () => {
-  const user = false;
+  const user = useSelector(state=>state.user.currentUser);
   return (
     <Router>
       <Routes>
