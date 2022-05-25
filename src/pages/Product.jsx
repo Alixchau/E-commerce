@@ -147,7 +147,7 @@ const Product = () => {
     //update cart
     console.log(color);
     console.log(size);
-    if (color !=="" && size!=="") {
+    if (color !== "" && size !== "") {
       dispatch(addProduct({ ...product, quantity, color, size }));
     }
     else {
@@ -179,7 +179,8 @@ const Product = () => {
             </Filter>
             <Filter>
               <FilterTitle>Size</FilterTitle>
-              <FilterSize  onChange={(e) => setSize(e.target.value)}>
+              <FilterSize onChange={(e) => setSize(e.target.value)}>
+                <FilterSizeOption>Size</FilterSizeOption>
                 {
                   product.size?.map((s) =>
                     <FilterSizeOption key={s}>{s}</FilterSizeOption>
@@ -189,17 +190,19 @@ const Product = () => {
             </Filter>
           </FilterContainer>
           {
-            pickColorSize === true && <Alert severity="info">Please choose color and size</Alert> 
+            pickColorSize === true && <Alert severity="info">Please choose color and size</Alert>
           }
-                <Desc>Please choose color and size</Desc>
-                <AddContainer>
-                  <AmountContainer>
-                    <RemoveIcon style={{ cursor: 'pointer' }} onClick={() => handleQuantity("decrease")} />
-                    <Amount>{quantity}</Amount>
-                    <AddIcon style={{ cursor: 'pointer' }} onClick={() => handleQuantity("increase")} />
-                  </AmountContainer>
-                  <Button onClick={handleAddCart}>ADD TO CART</Button>
-                </AddContainer>                     
+          <Desc>Please choose color and size</Desc>
+          <Desc>Selected Color: {color}</Desc>
+          <Desc>Selected Size: {size}</Desc>
+          <AddContainer>
+            <AmountContainer>
+              <RemoveIcon style={{ cursor: 'pointer' }} onClick={() => handleQuantity("decrease")} />
+              <Amount>{quantity}</Amount>
+              <AddIcon style={{ cursor: 'pointer' }} onClick={() => handleQuantity("increase")} />
+            </AmountContainer>
+            <Button onClick={handleAddCart}>ADD TO CART</Button>
+          </AddContainer>
         </InfoContainer>
       </Wrapper>
       <Newsletter />
