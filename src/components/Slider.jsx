@@ -51,9 +51,13 @@ const Slide = styled.div`
 const ImgContainer = styled.div`
   height: 100%;
   flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 const Image = styled.img`
-height: 80%;
+height: 100%;
+
 `;
 const InfoContainer = styled.div`
   flex: 1;

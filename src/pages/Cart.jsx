@@ -5,11 +5,14 @@ import Footer from "../components/Footer";
 import RemoveIcon from '@mui/icons-material/Remove';
 import AddIcon from '@mui/icons-material/Add';
 import { mobile } from "../responsive";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import StripeCheckout from "react-stripe-checkout";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { userRequest } from "../makeRequest";
+import { addProduct, newCart } from "../redux/cartRedux";
+import { createCart, loadCart } from "../redux/apiCalls";
 
 const PUBLISHABLE_stripekey = "pk_test_51L1ck6D2bTqVrtoS5iNwhb3MsPmh7VJHN5TBvMbrD6tFjKHBZa7MsmT3fONAkL7vt8tRqcQMAGOs8smVastBym1R00DYOCJf4V";
 
@@ -97,6 +100,7 @@ const ProductAmountContainer = styled.div`
   align-items: center;
   margin-bottom: 20px;
 `;
+
 const ProductAmount = styled.div`
   font-size: 24px;
   margin: 5px;
@@ -144,27 +148,36 @@ const Button = styled.button`
 
 const Cart = () => {
   const cart = useSelector(state => state.cart);
+  const {currentUser} = useSelector(state =>state.user);
   const [stripeToken, setStripeToken] = useState(null);
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
+  console.log(cart);
   //generate stripeToken
   const onToken = (token) => {
     setStripeToken(token);
   };
 
-//when there's stripeToken, make backend request
+  //load cart according to user id
    useEffect(() => {
+    loadCart(dispatch,currentUser);
+    console.log(cart);
+  }, []); 
+  //when there's stripeToken, make backend request
+  useEffect(() => {
     const makeBackendRequest = async () => {
       try {
-        const response = await axios.post(
-          "http://localhost:5000/api/checkout/payment", {
+        const response = await userRequest.post(
+          "/checkout/payment", {
           tokenId: stripeToken.id,
           amount: cart.total * 100,
         });
-        navigate("/success", {state:{ //pass state to success page
-          stripeData:response.data,
-          cart:cart 
-        }}
+        navigate("/success", {
+          state: { //pass state to success page
+            stripeData: response.data,
+            cart: cart
+          }
+        }
         );
       } catch (error) {
         console.log(error);
@@ -173,6 +186,15 @@ const Cart = () => {
     stripeToken && makeBackendRequest(); //only make request if there's an stripe token
   }, [stripeToken, cart.total, navigate]);
 
+  const changeQuantity = (type, product) =>{
+    if(type === "decrease"){
+
+    }else{
+      dispatch(addProduct(product));
+    }
+  }
+
+
   return (
     <Container>
       <Navbar />
@@ -180,13 +202,22 @@ const Cart = () => {
       <Wrapper>
         <Title>YOUR BAG</Title>
         <Top>
-          <TopButton>CONTINUE SHOPPING</TopButton>
+          <TopButton onClick={() => navigate("/")}>CONTINUE SHOPPING</TopButton>
           <TopTexts>
-            <TopText>Shopping Bag(2)</TopText>
+            <TopText>Shopping Bag({cart.quantity})</TopText>
             <TopText>Your Wishlist(0)</TopText>
           </TopTexts>
-          <TopButton type="filled">CHECKOUT NOW</TopButton>
-
+          <StripeCheckout
+            name='LOLA Shop'
+            billingAddress
+            shippingAddress
+            description={`Your total is $ ${cart.total}`}
+            amount={cart.total * 100}
+            token={onToken}
+            stripeKey={PUBLISHABLE_stripekey}
+          >
+            <TopButton type="filled">CHECKOUT NOW</TopButton>
+          </StripeCheckout>
         </Top>
         <Bottom>
           <Info>
@@ -204,9 +235,9 @@ const Cart = () => {
                   </ProductDetail>
                   <PriceDetail>
                     <ProductAmountContainer>
-                      <RemoveIcon />
+                      <RemoveIcon  style={{cursor:'pointer'}} onClick={()=>changeQuantity("decrease" , product)}/>
                       <ProductAmount>{product.quantity}</ProductAmount>
-                      <AddIcon />
+                      <AddIcon  style={{cursor:'pointer'}} onClick={()=>changeQuantity("increase", product)}/>
                     </ProductAmountContainer>
                     <ProductPrice>
                       $ {product.price * product.quantity}

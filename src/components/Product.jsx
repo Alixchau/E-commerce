@@ -44,6 +44,7 @@ const Circle = styled.div`
 const Image = styled.img`
   height: 70%;
   z-index: 2;
+  object-fit: cover;
 `;
 const Icon = styled.div`
   width: 40px;

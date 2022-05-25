@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useLocation } from "react-router";
 import { Link } from "react-router-dom";
+import { userRequest } from "../makeRequest";
 
 
 const PaymentSuccess = () => {
@@ -10,11 +11,13 @@ const PaymentSuccess = () => {
   const data = location.state.stripeData;
   const cart = location.state.cart;
   const [orderId, setOrderId] = useState(null);
+  const {currentUser} = useSelector(state =>state.user);
 
   useEffect(() => {
     const createOrder = async () => {
       try {
-        const response = await axios.post("http://localhost:5000/api/orders", {
+        const response = await userRequest.post("/orders", {
+          userId: currentUser._id,
           products: cart.products.map((item) => ({
             productId: item._id,
             quantity: item.quantity,
@@ -27,7 +30,7 @@ const PaymentSuccess = () => {
       } catch {}
     };
     data && createOrder();
-  }, [cart, data]);
+  }, [cart, data, currentUser]);
 
   return (
     <div

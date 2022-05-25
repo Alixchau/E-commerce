@@ -9,8 +9,11 @@ import { mobile } from "../responsive";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { addProduct } from "../redux/cartRedux";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
+import { publicRequest } from "../makeRequest";
+import { style } from "@mui/system";
+import { Alert } from "@mui/material";
 
 
 const Container = styled.div``
@@ -26,8 +29,8 @@ const ImgContainer = styled.div`
 
 const Image = styled.img`
   width: 100%;
-  height: 60vh;
-  object-fit: cover;
+  height: 90vh;
+  object-fit: scale-down;
   ${mobile({ height: "40vh" })}
 `;
 
@@ -116,12 +119,14 @@ const Product = () => {
   const [quantity, setQuantity] = useState(1);
   const [color, setColor] = useState("");
   const [size, setSize] = useState("");
-  const dispactch = useDispatch();
+  const [pickColorSize, setPickColorSize] = useState(false);
+  const dispatch = useDispatch();
+  const { currentUser } = useSelector(state => state.user);
 
   useEffect(() => {
     const getProduct = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/products/find/${id}`);
+        const response = await publicRequest.get(`/products/find/${id}`);
         setProduct(response.data);
       } catch (error) {
 
@@ -130,17 +135,24 @@ const Product = () => {
     getProduct();
   }, [id]);
 
-  const handleQuantity = (type) =>{
-    if(type === "decrease"){
-      setQuantity( quantity > 1 ? quantity - 1 : quantity);
-    }else{
+  const handleQuantity = (type) => {
+    if (type === "decrease") {
+      setQuantity(quantity > 1 ? quantity - 1 : quantity);
+    } else {
       setQuantity(quantity + 1);
     }
   }
 
-  const handleAddCart = () =>{
+  const handleAddCart = () => {
     //update cart
-    dispactch(addProduct({...product, quantity, color, size}));
+    console.log(color);
+    console.log(size);
+    if (color !=="" && size!=="") {
+      dispatch(addProduct({ ...product, quantity, color, size }));
+    }
+    else {
+      setPickColorSize(true);
+    }
   }
   return (
     <Container>
@@ -160,32 +172,34 @@ const Product = () => {
               <FilterTitle>Color</FilterTitle>
               {
                 product.color?.map((c) =>
-                  <FilterColor color={c} key={c} onClick={()=>setColor(c)}/>
+                  <FilterColor color={c} key={c} onClick={() => setColor(c)} />
                 )
               }
 
             </Filter>
             <Filter>
               <FilterTitle>Size</FilterTitle>
-              <FilterSize>
-              {
-                product.size?.map((s)=>
-                <FilterSizeOption key={s} onChange={(e)=>setSize(e.target.value)}>{s}</FilterSizeOption>
-                )
-              }decreaseinc
+              <FilterSize  onChange={(e) => setSize(e.target.value)}>
+                {
+                  product.size?.map((s) =>
+                    <FilterSizeOption key={s}>{s}</FilterSizeOption>
+                  )
+                }decreaseinc
               </FilterSize>
             </Filter>
           </FilterContainer>
-
-          <AddContainer>
-            <AmountContainer>
-              <RemoveIcon onClick={()=>handleQuantity("decrease")}/>
-              <Amount>{quantity}</Amount>
-              <AddIcon onClick={()=>handleQuantity("increase")}/>
-            </AmountContainer>
-            <Button onClick={handleAddCart}>ADD TO CART</Button>
-          </AddContainer>
-
+          {
+            pickColorSize === true && <Alert severity="info">Please choose color and size</Alert> 
+          }
+                <Desc>Please choose color and size</Desc>
+                <AddContainer>
+                  <AmountContainer>
+                    <RemoveIcon style={{ cursor: 'pointer' }} onClick={() => handleQuantity("decrease")} />
+                    <Amount>{quantity}</Amount>
+                    <AddIcon style={{ cursor: 'pointer' }} onClick={() => handleQuantity("increase")} />
+                  </AmountContainer>
+                  <Button onClick={handleAddCart}>ADD TO CART</Button>
+                </AddContainer>                     
         </InfoContainer>
       </Wrapper>
       <Newsletter />
