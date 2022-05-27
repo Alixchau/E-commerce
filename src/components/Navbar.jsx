@@ -75,18 +75,15 @@ const MenuItem = styled.div`
 `;
 const Navbar = () => {
   const navigate = useNavigate();
-
   const dispatch = useDispatch();
 
-  const handleLogout = async () => {
-    await dispatch(logout());
-  //  console.log(user);
-    dispatch(logoutCart());
-   // console.log(cart);
+  const handleLogout = () => {
+     dispatch(logout());
   }
 
   const cart = useSelector(state => state.cart);
   const user = useSelector(state => state.user.currentUser);
+  
   return (
     <Container>
       <Wrapper>

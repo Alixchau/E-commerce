@@ -79,8 +79,6 @@ background-color: transparent;
 cursor: pointer;
 `;
 
-
-
 const Slider = () => {
   const [slideIndex, setSlideIndex] = useState(0);
   const handleClick = (direction) =>{

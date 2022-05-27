@@ -1,63 +1,61 @@
 import axios from "axios";
-import { publicRequest,  userRequest } from "../makeRequest";
-import { loginFailure, loginStart, loginSuccess,registerSuccess } from "./userRedux";
-import {newCart, setCart} from './cartRedux';
+import { publicRequest, userRequest } from "../makeRequest";
+import { loginFailure, loginStart, loginSuccess, registerSuccess } from "./userRedux";
+import { newCart, setCart, addProduct } from './cartRedux';
+import { useSelector } from "react-redux";
 
 
-export const login = async (dispatch, user) => {
-  dispatch(loginStart());
+export const Registerfunc = async (dispatch, user) => {
   try {
-    const response = await userRequest.post("/auth/login", user);
-    dispatch(loginSuccess(response.data));
-    console.log(response.data);
+    const response = await userRequest.post("/auth/register", user);
+    dispatch(registerSuccess(response.data));
   } catch (error) {
     dispatch(loginFailure());
   }
 };
 
-export const register = async (dispatch, user) =>{
+export const CreateCart = async (dispatch, userId) => {
   try {
-    const response = await userRequest.post("/auth/register", user);
-    dispatch(registerSuccess(response.data));
-  } catch (error) {
-    dispatch(loginFailure());    
-  }
-};
-
-export const createCart =  async (dispatch, currentUser) =>{
-  try {
-    const response = await userRequest.post(`/carts/new/${currentUser._id}`, {    
-        userId:currentUser._id      
+    const response = await userRequest.post(`/carts/new/${userId}`, {
+      userId: userId
     });
     console.log(response.data);
     dispatch(newCart(response.data));
-  } catch (error) {
-    
-  }
-}; 
+  } catch (error) {}
+};
 
-export const loadCart = async (dispatch, currentUser) =>{
+export const LoadCart = async (dispatch, userId) => {
   try {
-    const response = await userRequest.get(`/carts/find/${currentUser._id}`);
+    const response = await userRequest.get(`/carts/find/${userId}`);
+
     console.log(response.data);
-    console.log(currentUser._id);
+    console.log(userId);
     //if user doen't have any cart, create a new cart
-    if(response.data === null){ 
-/*       console.log(currentUser);
-      dispatch(newCart(currentUser)); */
-      createCart(dispatch, currentUser)
-    }else{
+    if (response.data === null) {
+      CreateCart(dispatch, userId)
+    } else {
+    //  console.log(response.data.userId);
       dispatch(setCart(response.data));
     }
-
-  } catch (error) {
-    
-  }
-}
-/*  export const updateCart = async (dispatch, cart) =>{
+  } catch (error) {}
+};
+export const UpdateCart = async (cart) => {
   try {
-    const response = await axios.put
+    const response = await userRequest.put(`/carts/${cart.userId}`, {
+      body: cart
+    });
+  //  console.log(response.data);
+  } catch (error) {}
+};
+
+export const Loginfunc = async (dispatch, user) => {
+  dispatch(loginStart());
+  try {
+    const response = await userRequest.post("/auth/login", user);
+    dispatch(loginSuccess(response.data));
+    LoadCart(dispatch, response.data._id);
+  //  console.log(response.data);
   } catch (error) {
-    
+    dispatch(loginFailure());
   }
-}   */
+};

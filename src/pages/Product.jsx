@@ -14,6 +14,7 @@ import axios from "axios";
 import { publicRequest } from "../makeRequest";
 import { style } from "@mui/system";
 import { Alert } from "@mui/material";
+import { UpdateCart } from "../redux/apiCalls";
 
 
 const Container = styled.div``
@@ -122,7 +123,7 @@ const Product = () => {
   const [pickColorSize, setPickColorSize] = useState(false);
   const dispatch = useDispatch();
   const { currentUser } = useSelector(state => state.user);
-
+  const cart = useSelector(state =>state.cart);
   useEffect(() => {
     const getProduct = async () => {
       try {
@@ -149,11 +150,18 @@ const Product = () => {
     console.log(size);
     if (color !== "" && size !== "") {
       dispatch(addProduct({ ...product, quantity, color, size }));
+      console.log(cart);
     }
     else {
       setPickColorSize(true);
     }
   }
+  //call put method to cart api if there's update
+  useEffect(()=>{
+    console.log(cart);
+    UpdateCart(cart);
+  },[cart]);
+
   return (
     <Container>
       <Navbar />

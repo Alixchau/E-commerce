@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import { loadCart, login } from "../redux/apiCalls";
+import { LoadCart, Loginfunc } from "../redux/apiCalls";
 import { mobile } from "../responsive";
 
 const Container = styled.div`
@@ -75,7 +75,7 @@ const Login = () => {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    login(dispatch, { username, password }); //login function for custom dispatch functions
+    Loginfunc(dispatch, { username, password }); //login function for custom dispatch functions
     console.log(currentUser);
   };
 

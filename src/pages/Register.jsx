@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { mobile } from "../responsive";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { register } from '../redux/apiCalls';
+import { Registerfunc } from '../redux/apiCalls';
 import { Link, useNavigate } from "react-router-dom";
 import { registerToHome } from "../redux/userRedux";
 
@@ -76,7 +76,7 @@ const Register = () => {
       setPasswordMatch(false);
     } else {
       console.log(username);
-      register(dispactch, { username, email, password });
+      Registerfunc(dispactch, { username, email, password });
     }
   };
 

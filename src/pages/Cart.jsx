@@ -12,7 +12,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { userRequest } from "../makeRequest";
 import { addProduct, newCart, decreaseProduct } from "../redux/cartRedux";
-import { createCart, loadCart } from "../redux/apiCalls";
+import { CreateCart, LoadCart, UpdateCart } from "../redux/apiCalls";
 import { style } from "@mui/system";
 
 const PUBLISHABLE_stripekey = "pk_test_51L1ck6D2bTqVrtoS5iNwhb3MsPmh7VJHN5TBvMbrD6tFjKHBZa7MsmT3fONAkL7vt8tRqcQMAGOs8smVastBym1R00DYOCJf4V";
@@ -172,12 +172,7 @@ const Cart = () => {
     setStripeToken(token);
   };
 
-  //load cart according to user id
-  useEffect(() => {
-    loadCart(dispatch, currentUser);
-    console.log(cart);
-  }, []);
-  //when there's stripeToken, make backend request
+  //if there's stripeToken, make backend request
   useEffect(() => {
     const makeBackendRequest = async () => {
       try {
@@ -200,14 +195,19 @@ const Cart = () => {
     stripeToken && makeBackendRequest(); //only make request if there's an stripe token
   }, [stripeToken, cart.total, navigate]);
 
-  const changeQuantity = (type, product) => {
+  const changeQuantity = (type, product, cart) => {
     if (type === "decrease") {
       dispatch(decreaseProduct(product));
     } else {
       dispatch(addProduct(product));
+      UpdateCart(cart);
     }
-  }
+  };
 
+  //api call to update cart
+  useEffect(() => {
+    UpdateCart(cart);
+  }, [cart]);
 
   return (
     <Container>
