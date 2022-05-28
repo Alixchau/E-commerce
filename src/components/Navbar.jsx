@@ -3,11 +3,12 @@ import styled from 'styled-components'
 import SearchIcon from '@mui/icons-material/Search';
 import Badge from '@mui/material/Badge';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
+import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined';
 import { mobile } from '../responsive';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { logout } from '../redux/userRedux';
-import { logoutCart } from '../redux/cartRedux';
+
 
 const Container = styled.div`
   height: 60px;
@@ -78,12 +79,14 @@ const Navbar = () => {
   const dispatch = useDispatch();
 
   const handleLogout = () => {
-     dispatch(logout());
+    dispatch(logout());
   }
 
   const cart = useSelector(state => state.cart);
   const user = useSelector(state => state.user.currentUser);
-  
+  const orderQuantity = useSelector(state => state.order.orderQuantity);
+//  console.log(orderQuantity);
+
   return (
     <Container>
       <Wrapper>
@@ -95,7 +98,7 @@ const Navbar = () => {
           </SearchContainer>
         </Left>
         <Center>
-        <Logo onClick={()=>navigate("/")}>LOLA</Logo>
+          <Logo onClick={() => navigate("/")}>LOLA</Logo>
         </Center>
         <Right>
           {!user && (
@@ -115,6 +118,13 @@ const Navbar = () => {
                 <MenuItem>
                   <Badge badgeContent={cart.quantity} color="primary">
                     <ShoppingCartOutlinedIcon />
+                  </Badge>
+                </MenuItem>
+              </Link>
+              <Link to="/order">
+                <MenuItem>
+                  <Badge badgeContent={orderQuantity} color="primary">
+                    <LocalShippingOutlinedIcon />
                   </Badge>
                 </MenuItem>
               </Link>

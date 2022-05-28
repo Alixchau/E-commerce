@@ -13,7 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { userRequest } from "../makeRequest";
 import { addProduct, newCart, decreaseProduct } from "../redux/cartRedux";
 import { CreateCart, LoadCart, UpdateCart } from "../redux/apiCalls";
-import { style } from "@mui/system";
+
 
 const PUBLISHABLE_stripekey = "pk_test_51L1ck6D2bTqVrtoS5iNwhb3MsPmh7VJHN5TBvMbrD6tFjKHBZa7MsmT3fONAkL7vt8tRqcQMAGOs8smVastBym1R00DYOCJf4V";
 
@@ -91,7 +91,6 @@ const Details = styled.div`
   justify-content: space-around;
 `
 const ProductName = styled.div``;
-const ProductId = styled.div``;
 const ProductColor = styled.div`
   width: 20px;
   height: 20px;
@@ -195,12 +194,11 @@ const Cart = () => {
     stripeToken && makeBackendRequest(); //only make request if there's an stripe token
   }, [stripeToken, cart.total, navigate]);
 
-  const changeQuantity = (type, product, cart) => {
+  const changeQuantity = (type, product) => {
     if (type === "decrease") {
       dispatch(decreaseProduct(product));
     } else {
       dispatch(addProduct(product));
-      UpdateCart(cart);
     }
   };
 
@@ -251,8 +249,7 @@ const Cart = () => {
                           <ProductDetail>
                             <Image src={product.img} />
                             <Details>
-                              <ProductName><b>Product:</b> {product.title}</ProductName>
-                              <ProductId><b>ID:</b> {product._id}</ProductId>
+                              <ProductName><b>Product: </b> {product.title}</ProductName>
                               <ProductColorSection>
                                 <b>Color: </b>
                                 <ProductColor color={product.color} />

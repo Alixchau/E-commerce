@@ -74,12 +74,22 @@ const FilterColor = styled.span`
   margin: 0 5px;
   cursor: pointer;
 `;
+const SelectedColor = styled.div`
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: ${props => props.color};
+  margin: 0 5px;
+`;
 const FilterSize = styled.select`
   margin-left: 10px;
   padding: 5px;
 `;
 const FilterSizeOption = styled.option`
 `;
+const SelectedColorDesc = styled.div`
+  display: flex;
+`
 const AddContainer = styled.div`
   width: 50%;
   display: flex;
@@ -123,7 +133,7 @@ const Product = () => {
   const [pickColorSize, setPickColorSize] = useState(false);
   const dispatch = useDispatch();
   const { currentUser } = useSelector(state => state.user);
-  const cart = useSelector(state =>state.cart);
+  const cart = useSelector(state => state.cart);
   useEffect(() => {
     const getProduct = async () => {
       try {
@@ -145,7 +155,7 @@ const Product = () => {
   }
 
   const handleAddCart = () => {
-    //update cart
+    //update cart redux
     console.log(color);
     console.log(size);
     if (color !== "" && size !== "") {
@@ -157,10 +167,10 @@ const Product = () => {
     }
   }
   //call put method to cart api if there's update
-  useEffect(()=>{
+  useEffect(() => {
     console.log(cart);
     UpdateCart(cart);
-  },[cart]);
+  }, [cart]);
 
   return (
     <Container>
@@ -171,7 +181,7 @@ const Product = () => {
           <Image src={product.img} />
         </ImgContainer>
         <InfoContainer>
-          <Title>{product.Title}</Title>
+          <Title>{product.title}</Title>
           <Desc>{product.desc}</Desc>
           <Price>${product.price}</Price>
 
@@ -183,12 +193,11 @@ const Product = () => {
                   <FilterColor color={c} key={c} onClick={() => setColor(c)} />
                 )
               }
-
             </Filter>
             <Filter>
               <FilterTitle>Size</FilterTitle>
-              <FilterSize onChange={(e) => setSize(e.target.value)}>
-                <FilterSizeOption>Size</FilterSizeOption>
+              <FilterSize onClick={(e) => setSize(e.target.value)}>
+                <FilterSizeOption disabled>Size</FilterSizeOption>
                 {
                   product.size?.map((s) =>
                     <FilterSizeOption key={s}>{s}</FilterSizeOption>
@@ -200,8 +209,7 @@ const Product = () => {
           {
             pickColorSize === true && <Alert severity="info">Please choose color and size</Alert>
           }
-          <Desc>Please choose color and size</Desc>
-          <Desc>Selected Color: {color}</Desc>
+          <SelectedColorDesc>Selected Color: {color} <SelectedColor color={color} /></SelectedColorDesc>
           <Desc>Selected Size: {size}</Desc>
           <AddContainer>
             <AmountContainer>
