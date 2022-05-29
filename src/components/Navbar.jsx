@@ -8,6 +8,8 @@ import { mobile } from '../responsive';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { logout } from '../redux/userRedux';
+import { logoutCart } from '../redux/cartRedux';
+import { logoutOrder } from '../redux/orderRedux';
 
 
 const Container = styled.div`
@@ -78,14 +80,17 @@ const Navbar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const handleLogout = () => {
-    dispatch(logout());
-  }
-
   const cart = useSelector(state => state.cart);
   const user = useSelector(state => state.user.currentUser);
-  const orderQuantity = useSelector(state => state.order.orderQuantity);
-//  console.log(orderQuantity);
+  const {orderQuantity} = useSelector(state=>state.order);
+
+  
+  const handleLogout = () => {
+    dispatch(logout());
+    dispatch(logoutCart());
+    dispatch(logoutOrder());
+
+  }
 
   return (
     <Container>

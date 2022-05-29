@@ -11,8 +11,12 @@ const orderSlice = createSlice({
       state.orders = action.payload;
       state.orderQuantity = action.payload.reduce((accumulatedQuantity) => accumulatedQuantity + 1, 0);
     },
+    logoutOrder: (state) =>{
+      state.orders = [];
+      state.orderQuantity = 0
+    }
   },
 });
 
-export const { setOrder } = orderSlice.actions;
+export const { setOrder, logoutOrder } = orderSlice.actions;
 export default orderSlice.reducer;

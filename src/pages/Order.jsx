@@ -6,7 +6,7 @@ import { mobile } from "../responsive";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import {LoadOrders} from '../redux/apiCalls';
+import { LoadOrders } from '../redux/apiCalls';
 
 const Container = styled.div`
 `
@@ -18,6 +18,17 @@ const Title = styled.h1`
   font-weight: 300;
   text-align: center;
 `;
+const TextDiv = styled.div`
+  height: 40vh;
+`
+const Text = styled.h4`
+  font-weight: 400;
+  text-align: center;
+  margin: 30px auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
 const Summary = styled.div`
   border: 0.5px solid lightgray;
   border-radius: 10px;
@@ -84,16 +95,16 @@ const SummaryPrice = styled.h3`
 `
 
 const Order = () => {
-  const orders = useSelector(state => state.order.orders);
+  const { orders, orderQuantity } = useSelector(state => state.order);
   const dispatch = useDispatch();
-  const {currentUser} = useSelector(state => state.user);
+  const { currentUser } = useSelector(state => state.user);
   //console.log(orders);
 
-    //api call to load cart
-    useEffect( () => {
-      LoadOrders(dispatch, currentUser._id);
+  //api call to load cart
+  useEffect(() => {
+    LoadOrders(dispatch, currentUser._id);
   }, []);
-  
+
 
   return (
     <Container>
@@ -101,36 +112,40 @@ const Order = () => {
       <Announcement />
       <Wrapper>
         <Title>YOUR ORDERS</Title>
-        <Summary>
-          <OrderSummary>
-            {orders?.map(perOrder => (
-              <>
-              <OrderTitle>Order Id: {perOrder._id}</OrderTitle>
-                {
-
-                  perOrder.products?.map(product => (
+        {
+          orderQuantity === 0 ? <TextDiv><Text>You don't have any orders yet..</Text></TextDiv> :
+            (
+              <Summary>
+                <OrderSummary>
+                  {orders?.map(perOrder => (
                     <>
-                      <ItemTitle>Product name: {product.title}</ItemTitle>
-                      <ItemDiv>
-                      <ItemImg src={product.img} />
-                      <ItemDes>
-                      <ItmeColorDesc>Color:<ItemColor color={product.color} /></ItmeColorDesc>
-                      <ItemSize>Size: {product.size} </ItemSize>
-                      <ItemQuantity>Item quantity: {product.quantity}</ItemQuantity>
-                      <ItemPrice>Item Price: ${product.price * product.quantity}</ItemPrice>
-                      </ItemDes>
-                      </ItemDiv>
+                      <OrderTitle>Order Id: {perOrder._id}</OrderTitle>
+                      {
+
+                        perOrder.products?.map(product => (
+                          <>
+                            <ItemTitle>Product name: {product.title}</ItemTitle>
+                            <ItemDiv>
+                              <ItemImg src={product.img} />
+                              <ItemDes>
+                                <ItmeColorDesc>Color:<ItemColor color={product.color} /></ItmeColorDesc>
+                                <ItemSize>Size: {product.size} </ItemSize>
+                                <ItemQuantity>Item quantity: {product.quantity}</ItemQuantity>
+                                <ItemPrice>Item Price: ${product.price * product.quantity}</ItemPrice>
+                              </ItemDes>
+                            </ItemDiv>
+                          </>
+                        ))
+                      }
+                      <SummaryPrice>Total: ${perOrder.amount}</SummaryPrice>
+                      <Hr />
                     </>
                   ))
-                }
-                <SummaryPrice>Total: ${perOrder.amount}</SummaryPrice>
-                <Hr />
-              </>
-            ))
-            }
-
-          </OrderSummary>
-        </Summary>
+                  }
+                </OrderSummary>
+              </Summary>
+            )
+        }
       </Wrapper>
       <Footer />
     </Container>

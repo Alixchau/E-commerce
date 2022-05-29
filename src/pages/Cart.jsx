@@ -8,11 +8,11 @@ import { mobile } from "../responsive";
 import { useDispatch, useSelector } from "react-redux";
 import StripeCheckout from "react-stripe-checkout";
 import { useState, useEffect } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { userRequest } from "../makeRequest";
-import { addProduct, newCart, decreaseProduct } from "../redux/cartRedux";
-import { CreateCart, LoadCart, UpdateCart } from "../redux/apiCalls";
+import { addProduct,  decreaseProduct } from "../redux/cartRedux";
+import { UpdateCart, LoadOrders } from "../redux/apiCalls";
+import { clearCart } from "../redux/cartRedux";
 
 
 const PUBLISHABLE_stripekey = "pk_test_51L1ck6D2bTqVrtoS5iNwhb3MsPmh7VJHN5TBvMbrD6tFjKHBZa7MsmT3fONAkL7vt8tRqcQMAGOs8smVastBym1R00DYOCJf4V";
@@ -28,6 +28,7 @@ const Wrapper = styled.div`
 const Title = styled.h1`
   font-weight: 300;
   text-align: center;
+  margin: 20px auto;
 `;
 const Top = styled.div`
   display: flex;
@@ -44,6 +45,17 @@ const EmptyBagButton = styled.button`
   color: white;
   display: flex;
   margin: 15px auto;
+`
+const TextDiv = styled.div`
+  height: 29vh;
+`
+const Text = styled.h4`
+  font-weight: 400;
+  text-align: center;
+  margin: 30px auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `
 const TopButton = styled.button`
   padding: 10px;
@@ -165,34 +177,52 @@ const Cart = () => {
   const [stripeToken, setStripeToken] = useState(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [processing, setProcessing] = useState(false);
+
   console.log(cart);
   //generate stripeToken
   const onToken = (token) => {
     setStripeToken(token);
   };
 
-  //if there's stripeToken, make backend request
+  //if there's stripeToken, make backend request, update cart, order after payment successful
   useEffect(() => {
     const makeBackendRequest = async () => {
+      setProcessing(true); //show processing message
       try {
+        //process payment through strip api
         const response = await userRequest.post(
           "/checkout/payment", {
           tokenId: stripeToken.id,
           amount: cart.total * 100,
         });
-        navigate("/success", {
-          state: { //pass state to success page
-            stripeData: response.data,
-            cart: cart
-          }
-        }
-        );
+        //orders api to create new order
+         await userRequest.post("/orders", {
+          userId: currentUser._id,
+          products: cart.products.map((item) => ({
+            productId: item._id,
+            title: item.title,
+            img: item.img,
+            color: item.color,
+            size: item.size,
+            price: item.price,
+            quantity: item.quantity,
+          })),
+          amount: cart.total,
+          address: response.data.billing_details.address,
+        });
+
+        //clear cart
+        dispatch(clearCart());
+        //load new orders
+        LoadOrders(dispatch,currentUser._id);
+        //redirect to success page
+        navigate("/success");
       } catch (error) {
-        console.log(error);
       }
     };
     stripeToken && makeBackendRequest(); //only make request if there's an stripe token
-  }, [stripeToken, cart.total, navigate]);
+  }, [stripeToken]);
 
   const changeQuantity = (type, product) => {
     if (type === "decrease") {
@@ -214,101 +244,99 @@ const Cart = () => {
       <Wrapper>
         <Title>YOUR BAG</Title>
         {
-          cart.quantity <= 0 ?
+          processing ? <Title>Your Order is Processing...</Title> : (
             <>
-              <EmptyBagButton onClick={() => navigate("/")}>CONTINUE SHOPPING</EmptyBagButton>
-              <Title>Your bag is empty</Title>
-
-            </>
-            :
-            <>
-              <Top>
-                <TopButton onClick={() => navigate("/")}>CONTINUE SHOPPING</TopButton>
-                <TopTexts>
-                  <TopText>Shopping Bag({cart.quantity})</TopText>
-                  <TopText>Your Wishlist(0)</TopText>
-                </TopTexts>
-                <StripeCheckout
-                  name='LOLA Shop'
-                  billingAddress
-                  shippingAddress
-                  description={`Your total is $ ${cart.total}`}
-                  amount={cart.total * 100}
-                  token={onToken}
-                  stripeKey={PUBLISHABLE_stripekey}
-                >
-                  <TopButton type="filled">CHECKOUT NOW</TopButton>
-                </StripeCheckout>
-              </Top>
-              <Bottom>
-                <Info>
-                  {
-                    cart.products.map(product => (
-                      <>
-                        <Product>
-                          <ProductDetail>
-                            <Image src={product.img} />
-                            <Details>
-                              <ProductName><b>Product: </b> {product.title}</ProductName>
-                              <ProductColorSection>
-                                <b>Color: </b>
-                                <ProductColor color={product.color} />
-                              </ProductColorSection>
-
-                              <ProductSize><b>Size:</b> {product.size}</ProductSize>
-                            </Details>
-                          </ProductDetail>
-                          <PriceDetail>
-                            <ProductAmountContainer>
-                              <RemoveIcon style={{ cursor: 'pointer' }} onClick={() => changeQuantity("decrease", product)} />
-                              <ProductAmount>{product.quantity}</ProductAmount>
-                              <AddIcon style={{ cursor: 'pointer' }} onClick={() => changeQuantity("increase", product)} />
-                            </ProductAmountContainer>
-                            <ProductPrice>
-                              $ {product.price * product.quantity}
-                            </ProductPrice>
-                          </PriceDetail>
-                        </Product>
-                        <Hr />
-                      </>
-                    ))
-                  }
-                </Info>
-                <Summary>
-                  <SummaryTitle>ORDER SUMMARY</SummaryTitle>
-                  <SummaryItem>
-                    <SummaryItemText>Subtotal</SummaryItemText>
-                    <SummaryItemPrice>$ {cart.total}</SummaryItemPrice>
-                  </SummaryItem>
-                  <SummaryItem>
-                    <SummaryItemText>Estimated Shipping</SummaryItemText>
-                    <SummaryItemPrice>$ 5.90</SummaryItemPrice>
-                  </SummaryItem>
-                  <SummaryItem>
-                    <SummaryItemText>Shipping Discount</SummaryItemText>
-                    <SummaryItemPrice>$ -5.90</SummaryItemPrice>
-                  </SummaryItem>
-                  <SummaryItem type="total">
-                    <SummaryItemText >Total</SummaryItemText>
-                    <SummaryItemPrice>$ {cart.total}</SummaryItemPrice>
-                  </SummaryItem>
-                  <StripeCheckout
-                    name='LOLA Shop'
-                    billingAddress
-                    shippingAddress
-                    description={`Your total is $ ${cart.total}`}
-                    amount={cart.total * 100}
-                    token={onToken}
-                    stripeKey={PUBLISHABLE_stripekey}
-                  >
-                    <Button >CHECKOUT NOW</Button>
-
-                  </StripeCheckout>
-                </Summary>
-              </Bottom>
-
-            </>
-        }
+              {
+                cart.quantity <= 0 ?
+                  <>
+                    <EmptyBagButton onClick={() => navigate("/")}>CONTINUE SHOPPING</EmptyBagButton>
+                    <TextDiv><Text>Your bag is empty</Text></TextDiv>
+                  </>
+                  :
+                  <>
+                    <Top>
+                      <TopButton onClick={() => navigate("/")}>CONTINUE SHOPPING</TopButton>
+                      <TopTexts>
+                        <TopText>Shopping Bag({cart.quantity})</TopText>
+                      </TopTexts>
+                      <StripeCheckout
+                        name='LOLA Shop'
+                        billingAddress
+                        shippingAddress
+                        description={`Your total is $ ${cart.total}`}
+                        amount={cart.total * 100}
+                        token={onToken}
+                        stripeKey={PUBLISHABLE_stripekey}
+                      >
+                        <TopButton type="filled">CHECKOUT NOW</TopButton>
+                      </StripeCheckout>
+                    </Top>
+                    <Bottom>
+                      <Info>
+                        {
+                          cart.products.map(product => (
+                            <>
+                              <Product>
+                                <ProductDetail>
+                                  <Image src={product.img} />
+                                  <Details>
+                                    <ProductName><b>Product: </b> {product.title}</ProductName>
+                                    <ProductColorSection>
+                                      <b>Color: </b>
+                                      <ProductColor color={product.color} />
+                                    </ProductColorSection>
+                                    <ProductSize><b>Size:</b> {product.size}</ProductSize>
+                                  </Details>
+                                </ProductDetail>
+                                <PriceDetail>
+                                  <ProductAmountContainer>
+                                    <RemoveIcon style={{ cursor: 'pointer' }} onClick={() => changeQuantity("decrease", product)} />
+                                    <ProductAmount>{product.quantity}</ProductAmount>
+                                    <AddIcon style={{ cursor: 'pointer' }} onClick={() => changeQuantity("increase", product)} />
+                                  </ProductAmountContainer>
+                                  <ProductPrice>
+                                    $ {product.price * product.quantity}
+                                  </ProductPrice>
+                                </PriceDetail>
+                              </Product>
+                              <Hr />
+                            </>
+                          ))
+                        }
+                      </Info>
+                      <Summary>
+                        <SummaryTitle>ORDER SUMMARY</SummaryTitle>
+                        <SummaryItem>
+                          <SummaryItemText>Subtotal</SummaryItemText>
+                          <SummaryItemPrice>$ {cart.total}</SummaryItemPrice>
+                        </SummaryItem>
+                        <SummaryItem>
+                          <SummaryItemText>Estimated Shipping</SummaryItemText>
+                          <SummaryItemPrice>$ 5.90</SummaryItemPrice>
+                        </SummaryItem>
+                        <SummaryItem>
+                          <SummaryItemText>Shipping Discount</SummaryItemText>
+                          <SummaryItemPrice>$ -5.90</SummaryItemPrice>
+                        </SummaryItem>
+                        <SummaryItem type="total">
+                          <SummaryItemText >Total</SummaryItemText>
+                          <SummaryItemPrice>$ {cart.total}</SummaryItemPrice>
+                        </SummaryItem>
+                        <StripeCheckout
+                          name='LOLA Shop'
+                          billingAddress
+                          shippingAddress
+                          description={`Your total is $ ${cart.total}`}
+                          amount={cart.total * 100}
+                          token={onToken}
+                          stripeKey={PUBLISHABLE_stripekey}
+                        >
+                          <Button >CHECKOUT NOW</Button>
+                        </StripeCheckout>
+                      </Summary>
+                    </Bottom>
+                  </>
+              }</>)}
       </Wrapper>
       <Footer />
     </Container>

@@ -57,9 +57,15 @@ const cartSlice = createSlice({
       state.products = [];
       state.quantity = 0;
       state.total = 0
+    },
+    logoutCart:(state) =>{
+      state.userId = null;
+      state.products = [];
+      state.quantity = 0;
+      state.total = 0
     }
   },
 });
 
-export const { newCart, setCart, logoutCart, addProduct, decreaseProduct, clearCart } = cartSlice.actions;
+export const { newCart, setCart, addProduct, decreaseProduct, clearCart,logoutCart } = cartSlice.actions;
 export default cartSlice.reducer;

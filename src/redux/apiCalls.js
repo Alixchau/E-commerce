@@ -1,9 +1,7 @@
-import axios from "axios";
 import { publicRequest, userRequest } from "../makeRequest";
 import { loginFailure, loginStart, loginSuccess, registerSuccess } from "./userRedux";
-import { newCart, setCart, addProduct } from './cartRedux';
+import { newCart, setCart } from './cartRedux';
 import { setOrder } from './orderRedux';
-import { useSelector } from "react-redux";
 
 
 export const Registerfunc = async (dispatch, user) => {
@@ -20,6 +18,7 @@ export const CreateCart = async (dispatch, userId) => {
     const response = await userRequest.post(`/carts/new/${userId}`, {
       userId: userId
     });
+    console.log((response.data));
     console.log(response.data);
     dispatch(newCart(response.data));
   } catch (error) {}
@@ -45,14 +44,14 @@ export const UpdateCart = async (cart) => {
     const response = await userRequest.put(`/carts/${cart.userId}`, {
       body: cart
     });
-  //  console.log(response.data);
+    console.log(response.data);
   } catch (error) {}
 };
 
 export const  LoadOrders = async (dispatch, userId) =>{
   try{
     const orderListResponse =await userRequest.get(`/orders/find/${userId}`);
-   // console.log(orderListResponse.data);
+    console.log(orderListResponse.data);
     dispatch(setOrder(orderListResponse.data));
   } catch { }
 };
@@ -65,7 +64,7 @@ export const Loginfunc = async (dispatch, user) => {
     dispatch(loginSuccess(response.data));
     LoadCart(dispatch, response.data._id);
     LoadOrders(dispatch, response.data._id);
-  //  console.log(response.data);
+    console.log(response.data);
   } catch (error) {
     dispatch(loginFailure());
   }
