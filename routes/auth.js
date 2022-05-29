@@ -2,6 +2,7 @@ const router = require("express").Router();
 const User = require("../models/User");
 const CryptoJS = require("crypto-js");
 const jwt = require("jsonwebtoken");
+const { verifyToken } = require("./verifyToken");
 
 //REGISTER
 router.post("/register", async (req, res) => {
@@ -36,15 +37,23 @@ router.post("/login", async (req, res) => {
         isAdmin: user.isAdmin,
       },
       process.env.JWT_SECRET,
-      { expiresIn: "3d" }
+      { expiresIn: "30m" }
     );
-
+  //  console.log(accessToken);
     const { password, ...others } = user._doc;
     res.status(200).json({ ...others, accessToken }); //only send info that's not password 
   } catch (error) {
     res.status(500).json(error);
   }
-})
+});
 
+//Logout
+/* router.get("/logout" ,async(req,res)=>{
+ // res.cookie("jwt", "", {maxAge:1});
+  const user = req.body;
+  console.log(user);
+//  const { password, ...others } = user._doc;
+  res.status(200).json(res);
+}); */
 
 module.exports = router;

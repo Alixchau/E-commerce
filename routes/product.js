@@ -43,7 +43,7 @@ router.delete("/:id", verifyTokenAndAdmin, async (req, res) => {
 });
 
 //GET Product 
-router.get("/find/:id", verifyTokenAndAuthorization, async (req, res) => {
+router.get("/find/:id", async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
     res.status(200).json(product);
@@ -53,7 +53,7 @@ router.get("/find/:id", verifyTokenAndAuthorization, async (req, res) => {
 });
 
 //GET ALL Product 
-router.get("/", verifyTokenAndAuthorization, async (req, res) => {
+router.get("/",  async (req, res) => {
   const queryNew = req.query.new; //if query indicate new is true, only return first 5 products
   const queryCategory = req.query.category;
   try {
