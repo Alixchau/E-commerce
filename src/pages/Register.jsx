@@ -104,7 +104,7 @@ const Register = () => {
         </Form>
         {registered &&
           <>
-            <Title>Registered. Login</Title>
+            <Title>Registered. Go to Login.</Title>
             <br></br>
             <Button onClick={handleLogin}>Login</Button>
           </>
