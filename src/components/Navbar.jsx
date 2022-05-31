@@ -30,6 +30,7 @@ const Left = styled.div`
   flex: 1;
   display: flex;
   align-items: center;
+  ${mobile({ flex: "0" })}
 `;
 
 const Language = styled.span`
@@ -44,12 +45,12 @@ const SearchContainer = styled.div`
   align-items: center;
   margin-left: 25px;
   padding: 5px;
+  ${mobile({ display: "none" })}
 `;
 
 const Input = styled.input`
   border: none;
   ${mobile({ width: "50px" })}
-
 `;
 const Center = styled.div`
   flex: 1;
@@ -58,7 +59,7 @@ const Center = styled.div`
 
 const Logo = styled.h1`
   font-weight: bold;
-  ${mobile({ fontSize: "24px" })}
+  ${mobile({ fontSize: "24px"})}
   cursor: pointer;
 `;
 const Right = styled.div`
@@ -66,7 +67,7 @@ const Right = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  ${mobile({ flex: "2", justifyContent: "center" })}
+  ${mobile({ flex: "2", justifyContent: "end" })}
 
 `;
 
@@ -117,7 +118,7 @@ const Navbar = () => {
           )}
           {user && (
             <>
-              <MenuItem onClick={handleLogout}>LOG OUT</MenuItem>
+              <MenuItem>Hi, {user.username}</MenuItem>
               <Link to="/cart">
                 <MenuItem>
                   <Badge badgeContent={cart.quantity} color="primary">
@@ -130,8 +131,9 @@ const Navbar = () => {
                   <Badge badgeContent={orderQuantity} color="primary">
                     <LocalShippingOutlinedIcon />
                   </Badge>
-                </MenuItem>
+                </MenuItem>                
               </Link>
+              <MenuItem onClick={handleLogout}>Log Out</MenuItem>
             </>
           )}
         </Right>
