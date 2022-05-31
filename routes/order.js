@@ -8,7 +8,7 @@ const {
 } = require("./verifyToken");
 
 //CREATE
-router.post("/", verifyToken, async (req, res) => {
+router.post("/",verifyToken, async (req, res) => {
   const newOrder= new Order(req.body);
   try {
     const savedOrder = await newOrder.save();
@@ -19,7 +19,7 @@ router.post("/", verifyToken, async (req, res) => {
 });
 
 //UPDATE
-router.put("/:id", verifyTokenAndAdmin, async (req, res) => {
+router.put("/:id",verifyToken, async (req, res) => {
   try {
     const updatedOrder = await Order.findByIdAndUpdate(
       req.params.id,

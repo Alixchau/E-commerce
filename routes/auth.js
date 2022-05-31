@@ -47,13 +47,4 @@ router.post("/login", async (req, res) => {
   }
 });
 
-//Logout
-/* router.get("/logout" ,async(req,res)=>{
- // res.cookie("jwt", "", {maxAge:1});
-  const user = req.body;
-  console.log(user);
-//  const { password, ...others } = user._doc;
-  res.status(200).json(res);
-}); */
-
 module.exports = router;

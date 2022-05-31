@@ -22,10 +22,10 @@ router.post("/new/:userId", verifyToken, async (req, res) => {
 });
 
 //UPDATE
-router.put("/:id", verifyToken, async (req, res) => {
+router.put("/:id", verifyToken,async (req, res) => {
   try {
     const updatedCart = await Cart.findOneAndUpdate(
-      {userId: req.params.id},
+      {userId: req.body.body.userId},
       {
         $set: req.body.body, //accept all the data in the api body
       },
