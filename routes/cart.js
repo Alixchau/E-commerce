@@ -8,7 +8,7 @@ const {
 } = require("./verifyToken");
 
 //CREATE
-router.post("/new/:userId", verifyToken, async (req, res) => {
+router.post("/new/:userId", async (req, res) => {
   const newCart= new Cart({userId: req.body.userId});
   // console.log(newCart);
   try {
@@ -22,7 +22,7 @@ router.post("/new/:userId", verifyToken, async (req, res) => {
 });
 
 //UPDATE
-router.put("/:id", verifyToken,async (req, res) => {
+router.put("/:id",async (req, res) => {
   try {
     const updatedCart = await Cart.findOneAndUpdate(
       {userId: req.body.body.userId},
