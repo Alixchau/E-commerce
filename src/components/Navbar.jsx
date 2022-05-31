@@ -4,7 +4,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import Badge from '@mui/material/Badge';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined';
-import { mobile } from '../responsive';
+import { mobile, tablet } from '../responsive';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { logout } from '../redux/userRedux';
@@ -22,8 +22,8 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  ${mobile({ padding: "10px 0px" })}
-
+  ${mobile({ padding: "10px 0px" })};
+  ${tablet({padding:"10px 20px"})}
 `;
 
 const Left = styled.div`
@@ -89,7 +89,6 @@ const Navbar = () => {
     dispatch(logout());
     dispatch(logoutCart());
     dispatch(logoutOrder());
-
   }
 
   return (

@@ -3,7 +3,7 @@ import { mobile } from "../responsive";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Registerfunc } from '../redux/apiCalls';
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { registerToHome } from "../redux/userRedux";
 
 const Container = styled.div`
@@ -75,15 +75,15 @@ const Register = () => {
     if (password !== confirmPassword) {
       setPasswordMatch(false);
     } else {
-      console.log(username);
       Registerfunc(dispactch, { username, email, password });
     }
   };
 
-  const handleHome = () => {
-    dispactch(registerToHome({ username }));
-    navigate("/");
+  const handleLogin = () => {
+    //dispactch(registerToHome({ username }));
+    navigate("/login");
   }
+
   return (
     <Container>
       <Wrapper>
@@ -104,9 +104,9 @@ const Register = () => {
         </Form>
         {registered &&
           <>
-            <Title>Registered. Go to Homepage</Title>
+            <Title>Registered. Login</Title>
             <br></br>
-            <Button onClick={handleHome}>HOME</Button>
+            <Button onClick={handleLogin}>Login</Button>
           </>
         }
       </Wrapper>

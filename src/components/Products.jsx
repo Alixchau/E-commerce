@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Product from './Product';
-import axios from 'axios';
+import { publicRequest } from '../makeRequest';
 
 const Container = styled.div`
   padding: 20px;
@@ -10,6 +10,7 @@ const Container = styled.div`
   justify-content: space-between;
 `;
 
+//products component will be renderred on Home Or ProductList page depends on prop category 
 const Products = ({ category, filters, sort }) => {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilterProducts] = useState([]);
@@ -17,8 +18,7 @@ const Products = ({ category, filters, sort }) => {
   useEffect(() => {
     const getProducts = async () => {
       try {
-        const response = await axios.get(category ? `http://localhost:5000/api/products?category=${category}` : "http://localhost:5000/api/products");
-        console.log(response.data);
+        const response = await publicRequest.get(category ? `/products?category=${category}` : "/products");
         setProducts(response.data);
       } catch (error) {
       };

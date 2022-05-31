@@ -5,12 +5,13 @@ import TwitterIcon from '@mui/icons-material/Twitter';
 import PhoneAndroidIcon from '@mui/icons-material/PhoneAndroid';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import RoomIcon from '@mui/icons-material/Room';
-import { mobile } from '../responsive';
+import { mobile,tablet } from '../responsive';
 
 const Container = styled.div`
   display: flex;
   background-color: #E4F9F5;
-  ${mobile({flexDirection:"column"})}
+  ${mobile({flexDirection:"column"})};
+  ${tablet({padding:"0px 20px"})}
 `;
 const Left = styled.div`
   flex: 1;
@@ -57,7 +58,6 @@ const ListItem = styled.li`
 const Right = styled.div`
   flex: 1;
   padding: 20px;
-  ${mobile({backgroundColor:"#F6F6F6"})}
 ;
 `
 const ContactItem = styled.div`

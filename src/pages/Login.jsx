@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { Loginfunc } from "../redux/apiCalls";
 import { mobile } from "../responsive";
+import { useNavigate } from 'react-router-dom';
 
 
 const Container = styled.div`
@@ -72,14 +73,13 @@ const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
-  const { currentUser, isFetching, loginError } = useSelector(state => state.user);
+  const navigate = useNavigate();
+  const { isFetching, loginError } = useSelector(state => state.user);
 
   const handleLogin = (e) => {
     e.preventDefault();
     Loginfunc(dispatch, { username, password }); //login function for custom dispatch functions
-    console.log(currentUser);
   };
-
 
 
   return (
@@ -92,7 +92,7 @@ const Login = () => {
           <Button onClick={handleLogin} disabled={isFetching}>LOGIN</Button>
           {loginError && <Error>Something went wrong</Error>}
           <Link>FORGOT PASSWORD?</Link>
-          <Link>CREATE A NEW ACCOUNT</Link>
+          <Link onClick={()=> navigate("/register")}>CREATE A NEW ACCOUNT</Link>
         </Form>
       </Wrapper>
     </Container>

@@ -6,13 +6,11 @@ import Footer from "../components/Footer";
 import RemoveIcon from '@mui/icons-material/Remove';
 import AddIcon from '@mui/icons-material/Add';
 import { mobile } from "../responsive";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { addProduct } from "../redux/cartRedux";
 import { useDispatch, useSelector } from "react-redux";
-import axios from "axios";
 import { publicRequest } from "../makeRequest";
-import { style } from "@mui/system";
 import { Alert } from "@mui/material";
 import { UpdateCart } from "../redux/apiCalls";
 
@@ -22,7 +20,6 @@ const Wrapper = styled.div`
   padding: 50px;
   display: flex;
   ${mobile({ padding: "10px", flexDirection: "column" })}
-
 `;
 const ImgContainer = styled.div`
   flex: 1;
@@ -30,8 +27,10 @@ const ImgContainer = styled.div`
 
 const Image = styled.img`
   width: 100%;
-  height: 90vh;
   object-fit: scale-down;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
   ${mobile({ height: "40vh" })}
 `;
 
@@ -132,8 +131,8 @@ const Product = () => {
   const [size, setSize] = useState("");
   const [pickColorSize, setPickColorSize] = useState(false);
   const dispatch = useDispatch();
-  const { currentUser } = useSelector(state => state.user);
-  const cart = useSelector(state => state.cart);
+ const cart = useSelector(state => state.cart);
+
   useEffect(() => {
     const getProduct = async () => {
       try {
@@ -156,11 +155,12 @@ const Product = () => {
 
   const handleAddCart = () => {
     //update cart redux
-    console.log(color);
-    console.log(size);
+
     if (color !== "" && size !== "") {
       dispatch(addProduct({ ...product, quantity, color, size }));
       console.log(cart);
+      UpdateCart(cart);
+
     }
     else {
       setPickColorSize(true);
@@ -170,6 +170,8 @@ const Product = () => {
   useEffect(() => {
     console.log(cart);
     UpdateCart(cart);
+
+
   }, [cart]);
 
   return (

@@ -1,12 +1,4 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useLocation } from "react-router";
 import { Link } from "react-router-dom";
-import { userRequest } from "../makeRequest";
-import { clearCart } from "../redux/cartRedux";
-import { setOrder } from "../redux/orderRedux";
-import {LoadOrders} from '../redux/apiCalls';
 import styled from "styled-components";
 
 const Title = styled.h3`

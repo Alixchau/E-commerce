@@ -82,7 +82,7 @@ const ProductList = () => {
           </Select>
         </Filter>
       </FilterContainer>
-      {/* pass filters and category to Products component, this component will render on homepage or route /prodcut/category depends on the prop category */}
+      {/* pass filters and category to Products component */}
       <Products category={category} filters={filters} sort={sort}/>
       <Newsletter />
       <Footer />

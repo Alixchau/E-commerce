@@ -4,16 +4,23 @@ import Announcement from "../components/Announcement";
 import Footer from "../components/Footer";
 import { mobile } from "../responsive";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { LoadOrders } from '../redux/apiCalls';
 
 const Container = styled.div`
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 `
 const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+const InnerWrapper = styled.div`
  padding: 20px;
  ${mobile({ padding: "10px" })}
-`;
+`
 const Title = styled.h1`
   font-weight: 300;
   text-align: center;
@@ -98,9 +105,8 @@ const Order = () => {
   const { orders, orderQuantity } = useSelector(state => state.order);
   const dispatch = useDispatch();
   const { currentUser } = useSelector(state => state.user);
-  //console.log(orders);
 
-  //api call to load cart
+  //api call to load order
   useEffect(() => {
     LoadOrders(dispatch, currentUser._id);
   }, []);
@@ -108,46 +114,48 @@ const Order = () => {
 
   return (
     <Container>
-      <Navbar />
-      <Announcement />
       <Wrapper>
-        <Title>YOUR ORDERS</Title>
-        {
-          orderQuantity === 0 ? <TextDiv><Text>You don't have any orders yet..</Text></TextDiv> :
-            (
-              <Summary>
-                <OrderSummary>
-                  {orders?.map(perOrder => (
-                    <>
-                      <OrderTitle>Order Id: {perOrder._id}</OrderTitle>
-                      {
+        <Navbar />
+        <Announcement />
+        <InnerWrapper>
+          <Title>YOUR ORDERS</Title>
+          {
+            orderQuantity === 0 ? <TextDiv><Text>You don't have any orders yet..</Text></TextDiv> :
+              (
+                <Summary>
+                  <OrderSummary>
+                    {orders?.map(perOrder => (
+                      <>
+                        <OrderTitle>Order Id: {perOrder._id}</OrderTitle>
+                        {
 
-                        perOrder.products?.map(product => (
-                          <>
-                            <ItemTitle>Product name: {product.title}</ItemTitle>
-                            <ItemDiv>
-                              <ItemImg src={product.img} />
-                              <ItemDes>
-                                <ItmeColorDesc>Color:<ItemColor color={product.color} /></ItmeColorDesc>
-                                <ItemSize>Size: {product.size} </ItemSize>
-                                <ItemQuantity>Item quantity: {product.quantity}</ItemQuantity>
-                                <ItemPrice>Item Price: ${product.price * product.quantity}</ItemPrice>
-                              </ItemDes>
-                            </ItemDiv>
-                          </>
-                        ))
-                      }
-                      <SummaryPrice>Total: ${perOrder.amount}</SummaryPrice>
-                      <Hr />
-                    </>
-                  ))
-                  }
-                </OrderSummary>
-              </Summary>
-            )
-        }
+                          perOrder.products?.map(product => (
+                            <>
+                              <ItemTitle>Product name: {product.title}</ItemTitle>
+                              <ItemDiv>
+                                <ItemImg src={product.img} />
+                                <ItemDes>
+                                  <ItmeColorDesc>Color:<ItemColor color={product.color} /></ItmeColorDesc>
+                                  <ItemSize>Size: {product.size} </ItemSize>
+                                  <ItemQuantity>Item quantity: {product.quantity}</ItemQuantity>
+                                  <ItemPrice>Item Price: ${product.price * product.quantity}</ItemPrice>
+                                </ItemDes>
+                              </ItemDiv>
+                            </>
+                          ))
+                        }
+                        <SummaryPrice>Total: ${perOrder.amount}</SummaryPrice>
+                        <Hr />
+                      </>
+                    ))
+                    }
+                  </OrderSummary>
+                </Summary>
+              )
+          }
+        </InnerWrapper>
       </Wrapper>
-      <Footer />
+        <Footer />
     </Container>
   )
 };

@@ -10,7 +10,7 @@ import StripeCheckout from "react-stripe-checkout";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { userRequest } from "../makeRequest";
-import { addProduct,  decreaseProduct } from "../redux/cartRedux";
+import { addProduct, decreaseProduct } from "../redux/cartRedux";
 import { UpdateCart, LoadOrders } from "../redux/apiCalls";
 import { clearCart } from "../redux/cartRedux";
 
@@ -18,17 +18,23 @@ import { clearCart } from "../redux/cartRedux";
 const PUBLISHABLE_stripekey = "pk_test_51L1ck6D2bTqVrtoS5iNwhb3MsPmh7VJHN5TBvMbrD6tFjKHBZa7MsmT3fONAkL7vt8tRqcQMAGOs8smVastBym1R00DYOCJf4V";
 
 const Container = styled.div`
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;  
 `
 const Wrapper = styled.div`
- padding: 20px;
- ${mobile({ padding: "10px" })}
-
+  display: flex;
+  flex-direction: column;  
 `;
+const InnerWrapper = styled.div`
+ padding: 20px;
+ ${mobile({ padding: "15px" })};
 
+`
 const Title = styled.h1`
   font-weight: 300;
   text-align: center;
-  margin: 20px auto;
 `;
 const Top = styled.div`
   display: flex;
@@ -37,7 +43,7 @@ const Top = styled.div`
   padding: 20px;
 `;
 const EmptyBagButton = styled.button`
-    padding: 10px;
+  padding: 10px;
   font-weight: 600;
   cursor: pointer;
   border: "filled";
@@ -47,7 +53,7 @@ const EmptyBagButton = styled.button`
   margin: 15px auto;
 `
 const TextDiv = styled.div`
-  height: 29vh;
+
 `
 const Text = styled.h4`
   font-weight: 400;
@@ -179,7 +185,6 @@ const Cart = () => {
   const dispatch = useDispatch();
   const [processing, setProcessing] = useState(false);
 
-  console.log(cart);
   //generate stripeToken
   const onToken = (token) => {
     setStripeToken(token);
@@ -197,7 +202,7 @@ const Cart = () => {
           amount: cart.total * 100,
         });
         //orders api to create new order
-         await userRequest.post("/orders", {
+        await userRequest.post("/orders", {
           userId: currentUser._id,
           products: cart.products.map((item) => ({
             productId: item._id,
@@ -215,7 +220,7 @@ const Cart = () => {
         //clear cart
         dispatch(clearCart());
         //load new orders
-        LoadOrders(dispatch,currentUser._id);
+        LoadOrders(dispatch, currentUser._id);
         //redirect to success page
         navigate("/success");
       } catch (error) {
@@ -239,89 +244,27 @@ const Cart = () => {
 
   return (
     <Container>
-      <Navbar />
-      <Announcement />
       <Wrapper>
-        <Title>YOUR BAG</Title>
-        {
-          processing ? <Title>Your Order is Processing...</Title> : (
-            <>
-              {
-                cart.quantity <= 0 ?
-                  <>
-                    <EmptyBagButton onClick={() => navigate("/")}>CONTINUE SHOPPING</EmptyBagButton>
-                    <TextDiv><Text>Your bag is empty</Text></TextDiv>
-                  </>
-                  :
-                  <>
-                    <Top>
-                      <TopButton onClick={() => navigate("/")}>CONTINUE SHOPPING</TopButton>
-                      <TopTexts>
-                        <TopText>Shopping Bag({cart.quantity})</TopText>
-                      </TopTexts>
-                      <StripeCheckout
-                        name='LOLA Shop'
-                        billingAddress
-                        shippingAddress
-                        description={`Your total is $ ${cart.total}`}
-                        amount={cart.total * 100}
-                        token={onToken}
-                        stripeKey={PUBLISHABLE_stripekey}
-                      >
-                        <TopButton type="filled">CHECKOUT NOW</TopButton>
-                      </StripeCheckout>
-                    </Top>
-                    <Bottom>
-                      <Info>
-                        {
-                          cart.products.map(product => (
-                            <>
-                              <Product>
-                                <ProductDetail>
-                                  <Image src={product.img} />
-                                  <Details>
-                                    <ProductName><b>Product: </b> {product.title}</ProductName>
-                                    <ProductColorSection>
-                                      <b>Color: </b>
-                                      <ProductColor color={product.color} />
-                                    </ProductColorSection>
-                                    <ProductSize><b>Size:</b> {product.size}</ProductSize>
-                                  </Details>
-                                </ProductDetail>
-                                <PriceDetail>
-                                  <ProductAmountContainer>
-                                    <RemoveIcon style={{ cursor: 'pointer' }} onClick={() => changeQuantity("decrease", product)} />
-                                    <ProductAmount>{product.quantity}</ProductAmount>
-                                    <AddIcon style={{ cursor: 'pointer' }} onClick={() => changeQuantity("increase", product)} />
-                                  </ProductAmountContainer>
-                                  <ProductPrice>
-                                    $ {product.price * product.quantity}
-                                  </ProductPrice>
-                                </PriceDetail>
-                              </Product>
-                              <Hr />
-                            </>
-                          ))
-                        }
-                      </Info>
-                      <Summary>
-                        <SummaryTitle>ORDER SUMMARY</SummaryTitle>
-                        <SummaryItem>
-                          <SummaryItemText>Subtotal</SummaryItemText>
-                          <SummaryItemPrice>$ {cart.total}</SummaryItemPrice>
-                        </SummaryItem>
-                        <SummaryItem>
-                          <SummaryItemText>Estimated Shipping</SummaryItemText>
-                          <SummaryItemPrice>$ 5.90</SummaryItemPrice>
-                        </SummaryItem>
-                        <SummaryItem>
-                          <SummaryItemText>Shipping Discount</SummaryItemText>
-                          <SummaryItemPrice>$ -5.90</SummaryItemPrice>
-                        </SummaryItem>
-                        <SummaryItem type="total">
-                          <SummaryItemText >Total</SummaryItemText>
-                          <SummaryItemPrice>$ {cart.total}</SummaryItemPrice>
-                        </SummaryItem>
+        <Navbar />
+        <Announcement />
+        <InnerWrapper>
+          <Title>YOUR BAG</Title>
+          {
+            processing ? <Title>Your Order is Processing...</Title> : (
+              <>
+                {
+                  cart.quantity <= 0 ?
+                    <>
+                      <EmptyBagButton onClick={() => navigate("/")}>CONTINUE SHOPPING</EmptyBagButton>
+                      <TextDiv><Text>Your bag is empty</Text></TextDiv>
+                    </>
+                    :
+                    <>
+                      <Top>
+                        <TopButton onClick={() => navigate("/")}>CONTINUE SHOPPING</TopButton>
+                        <TopTexts>
+                          <TopText>Shopping Bag({cart.quantity})</TopText>
+                        </TopTexts>
                         <StripeCheckout
                           name='LOLA Shop'
                           billingAddress
@@ -331,14 +274,78 @@ const Cart = () => {
                           token={onToken}
                           stripeKey={PUBLISHABLE_stripekey}
                         >
-                          <Button >CHECKOUT NOW</Button>
+                          <TopButton type="filled">CHECKOUT NOW</TopButton>
                         </StripeCheckout>
-                      </Summary>
-                    </Bottom>
-                  </>
-              }</>)}
+                      </Top>
+                      <Bottom>
+                        <Info>
+                          {
+                            cart.products.map(product => (
+                              <>
+                                <Product>
+                                  <ProductDetail>
+                                    <Image src={product.img} />
+                                    <Details>
+                                      <ProductName><b>Product: </b> {product.title}</ProductName>
+                                      <ProductColorSection>
+                                        <b>Color: </b>
+                                        <ProductColor color={product.color} />
+                                      </ProductColorSection>
+                                      <ProductSize><b>Size:</b> {product.size}</ProductSize>
+                                    </Details>
+                                  </ProductDetail>
+                                  <PriceDetail>
+                                    <ProductAmountContainer>
+                                      <RemoveIcon style={{ cursor: 'pointer' }} onClick={() => changeQuantity("decrease", product)} />
+                                      <ProductAmount>{product.quantity}</ProductAmount>
+                                      <AddIcon style={{ cursor: 'pointer' }} onClick={() => changeQuantity("increase", product)} />
+                                    </ProductAmountContainer>
+                                    <ProductPrice>
+                                      $ {product.price * product.quantity}
+                                    </ProductPrice>
+                                  </PriceDetail>
+                                </Product>
+                                <Hr />
+                              </>
+                            ))
+                          }
+                        </Info>
+                        <Summary>
+                          <SummaryTitle>ORDER SUMMARY</SummaryTitle>
+                          <SummaryItem>
+                            <SummaryItemText>Subtotal</SummaryItemText>
+                            <SummaryItemPrice>$ {cart.total}</SummaryItemPrice>
+                          </SummaryItem>
+                          <SummaryItem>
+                            <SummaryItemText>Estimated Shipping</SummaryItemText>
+                            <SummaryItemPrice>$ 5.90</SummaryItemPrice>
+                          </SummaryItem>
+                          <SummaryItem>
+                            <SummaryItemText>Shipping Discount</SummaryItemText>
+                            <SummaryItemPrice>$ -5.90</SummaryItemPrice>
+                          </SummaryItem>
+                          <SummaryItem type="total">
+                            <SummaryItemText >Total</SummaryItemText>
+                            <SummaryItemPrice>$ {cart.total}</SummaryItemPrice>
+                          </SummaryItem>
+                          <StripeCheckout
+                            name='LOLA Shop'
+                            billingAddress
+                            shippingAddress
+                            description={`Your total is $ ${cart.total}`}
+                            amount={cart.total * 100}
+                            token={onToken}
+                            stripeKey={PUBLISHABLE_stripekey}
+                          >
+                            <Button >CHECKOUT NOW</Button>
+                          </StripeCheckout>
+                        </Summary>
+                      </Bottom>
+                    </>
+                }</>)}
+        </InnerWrapper>
       </Wrapper>
-      <Footer />
+        <Footer />
     </Container>
   );
 };

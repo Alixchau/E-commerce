@@ -10,7 +10,7 @@ const cartSlice = createSlice({
   },
   reducers: {
     newCart: (state, action) => {
-      state.userId = action.payload._id;
+      state.userId = action.payload.userId;
       state.products = [];
       state.quantity = 0;
       state.total = 0
