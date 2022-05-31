@@ -23,7 +23,7 @@ const Wrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   ${mobile({ padding: "10px 0px" })};
-  ${tablet({padding:"10px 20px"})}
+  ${tablet({ padding: "10px 20px" })}
 `;
 
 const Left = styled.div`
@@ -59,7 +59,7 @@ const Center = styled.div`
 
 const Logo = styled.h1`
   font-weight: bold;
-  ${mobile({ fontSize: "24px"})}
+  ${mobile({ fontSize: "24px" })}
   cursor: pointer;
 `;
 const Right = styled.div`
@@ -83,9 +83,9 @@ const Navbar = () => {
 
   const cart = useSelector(state => state.cart);
   const user = useSelector(state => state.user.currentUser);
-  const {orderQuantity} = useSelector(state=>state.order);
+  const { orderQuantity } = useSelector(state => state.order);
 
-  
+
   const handleLogout = () => {
     dispatch(logout());
     dispatch(logoutCart());
@@ -108,31 +108,23 @@ const Navbar = () => {
         <Right>
           {!user && (
             <>
-              <Link to="/register">
-                <MenuItem>REGISTER</MenuItem>
-              </Link>
-              <Link to="/login">
-                <MenuItem>SIGN IN</MenuItem>
-              </Link>
+              <MenuItem onClick={() => navigate("/register")}>REGISTER</MenuItem>
+              <MenuItem onClick={() => navigate("/login")}>SIGN IN</MenuItem>
             </>
           )}
           {user && (
             <>
               <MenuItem>Hi, {user.username}</MenuItem>
-              <Link to="/cart">
-                <MenuItem>
+                <MenuItem onClick={() => navigate("/cart")}>
                   <Badge badgeContent={cart.quantity} color="primary">
                     <ShoppingCartOutlinedIcon />
                   </Badge>
                 </MenuItem>
-              </Link>
-              <Link to="/order">
-                <MenuItem>
+                <MenuItem  onClick={() => navigate("/order")}>
                   <Badge badgeContent={orderQuantity} color="primary">
                     <LocalShippingOutlinedIcon />
                   </Badge>
-                </MenuItem>                
-              </Link>
+                </MenuItem>
               <MenuItem onClick={handleLogout}>Log Out</MenuItem>
             </>
           )}
