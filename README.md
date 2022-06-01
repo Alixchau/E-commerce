@@ -2,10 +2,10 @@
 
 ### [Live Site] (https://e-commerce-mern-deploy.herokuapp.com/)
 You can register a new account or use below test account </br>
-test account: kk
+test account: kk </br>
 password: 123
 
-<img src="https://i.ibb.co/L1sxBT5/Screenshot-2022-05-30-234831.png" alt="Screenshot-2022-05-30-234831" border="0"></a>
+<img src="https://i.ibb.co/ZG0BxMM/Screenshot-2022-05-30-234719.png" alt="Screenshot-2022-05-30-234719" border="0">
 
 ## Introduction
 
