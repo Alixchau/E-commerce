@@ -1,11 +1,11 @@
 # E-commerce Web Application
 
 ### [Live Site] (https://e-commerce-mern-deploy.herokuapp.com/)
-You can register a new account or use below test account 
+You can register a new account or use below test account </br>
 test account: kk
 password: 123
 
-<img src="https://i.ibb.co/L1sxBT5/Screenshot-2022-05-30-234831.png" alt="Screenshot-2022-05-30-234831" border="0">
+<img src="https://i.ibb.co/L1sxBT5/Screenshot-2022-05-30-234831.png" alt="Screenshot-2022-05-30-234831" border="0"></a>
 
 ## Introduction
 
