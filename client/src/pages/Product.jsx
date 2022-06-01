@@ -13,7 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { publicRequest } from "../makeRequest";
 import { Alert } from "@mui/material";
 import { UpdateCart } from "../redux/apiCalls";
-
+import { useNavigate } from 'react-router-dom';
 
 const Container = styled.div``
 const Wrapper = styled.div`
@@ -117,7 +117,7 @@ const Button = styled.button`
   background-color: white;
   cursor: pointer;
   font-weight: 500;
-
+  margin: auto 10px;
   &:hover{
     background-color: #f8f4f4;
   }
@@ -131,8 +131,9 @@ const Product = () => {
   const [size, setSize] = useState("");
   const [pickColorSize, setPickColorSize] = useState(false);
   const dispatch = useDispatch();
- const cart = useSelector(state => state.cart);
-
+  const cart = useSelector(state => state.cart);
+  const user = useSelector(state => state.user.currentUser);
+  const navigate = useNavigate();
   useEffect(() => {
     const getProduct = async () => {
       try {
@@ -219,7 +220,11 @@ const Product = () => {
               <Amount>{quantity}</Amount>
               <AddIcon style={{ cursor: 'pointer' }} onClick={() => handleQuantity("increase")} />
             </AmountContainer>
-            <Button onClick={handleAddCart}>ADD TO CART</Button>
+            {
+              user ? <Button onClick={handleAddCart}>ADD TO CART</Button> :
+              <Button onClick={()=> navigate("/login")}>LOGIN TO ADD PRODUCT</Button>
+            }
+
           </AddContainer>
         </InfoContainer>
       </Wrapper>
