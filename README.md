@@ -2,10 +2,9 @@
 
 ### [Live Site] (https://e-commerce-mern-deploy.herokuapp.com/)
 
+
 <img src="https://i.ibb.co/ZG0BxMM/Screenshot-2022-05-30-234719.png" alt="Screenshot-2022-05-30-234719" border="0">
-<video  width="480" controls/>
-<source src="https://youtu.be/i6pFppFDyNE" type="video/mp4">
-</video>
+[watch the video](https://youtu.be/i6pFppFDyNE)
 
 ## Introduction
 
