@@ -29,7 +29,7 @@ password: 123
 
 1. React
 2. Redux Toolkit
-3. Sytled Components
+3. Styled Components
 4. Node
 5. Express
 6. MongoDB
