@@ -1,4 +1,4 @@
-# E-commerce Web Application
+# Lola E-commerce Web Application
 
 ### [Live Site] (https://e-commerce-mern-deploy.herokuapp.com/)
 
