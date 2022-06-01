@@ -91,8 +91,8 @@ const Register = () => {
         <Form>
           <Input placeholder="username" onChange={(e) => setUsername(e.target.value)} required />
           <Input placeholder="email" onChange={(e) => setEmail(e.target.value)} required />
-          <Input placeholder="password" onChange={(e) => setPassword(e.target.value)} required />
-          <Input placeholder="confirm password" onChange={(e) => setConfirmPassword(e.target.value)} required />
+          <Input type="password" placeholder="password" onChange={(e) => setPassword(e.target.value)} required />
+          <Input type="password" placeholder="confirm password" onChange={(e) => setConfirmPassword(e.target.value)} required />
           <Agreement>By creating an account, I consent to the processing of my personal data in accordance with the <b>PRIVACY POLICY</b></Agreement>
           <Button onClick={handleRegister}>CREATE</Button>
           {

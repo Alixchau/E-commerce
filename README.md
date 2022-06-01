@@ -1,5 +1,7 @@
 # E-commerce Web Application
 
+### [Live Site] (https://e-commerce-mern-deploy.herokuapp.com/)
+
 <img src="https://i.ibb.co/q5nLLg3/Screenshot-2022-05-30-234607.png" alt="Screenshot-2022-05-30-234607" border="0">
 (Products Page)
 
@@ -46,7 +48,7 @@ This is a E-commerce shopping site, it allows users can browse products, add the
    1. MONGO_URL (MongoDB connection string)
    2. SECRET_PASSPHRASE (for CryptoJS password encryption)
    3. JWT_SECRET 
-   4.STRIPE_KEY (Stipe api private key)
+   4. STRIPE_KEY (Stipe api private key)
 3. Run npm start on both api and frontend
 
 
