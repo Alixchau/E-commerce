@@ -8,7 +8,7 @@
 
 ## Introduction
 
-This is a full stack E-commerce shopping site, it allows users can browse products, add them to shopping cart and see their orders after payment. Also other functions as below.
+Lola is a responsive full stack E-commerce shopping site, it allows users can browse products by category/color/size and sort them, manage shopping cart and view their orders after payment.
 
 You can register a new account or use below test account </br>
 test account: kk </br>
