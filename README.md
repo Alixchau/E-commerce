@@ -1,19 +1,11 @@
 # E-commerce Web Application
 
 ### [Live Site] (https://e-commerce-mern-deploy.herokuapp.com/)
-
-<img src="https://i.ibb.co/q5nLLg3/Screenshot-2022-05-30-234607.png" alt="Screenshot-2022-05-30-234607" border="0">
-(Products Page)
-
-<img src="https://i.ibb.co/PFdcg66/Screenshot-2022-05-30-234719.png" alt="Screenshot-2022-05-30-234719" border="0">
-(Cart Page)
+You can register a new account or use below test account 
+test account: kk
+password: 123
 
 <img src="https://i.ibb.co/L1sxBT5/Screenshot-2022-05-30-234831.png" alt="Screenshot-2022-05-30-234831" border="0">
-(Order Page)
-
-<img src="https://i.ibb.co/jVHYZFH/Screenshot-2022-05-30-234926.png" alt="Screenshot-2022-05-30-234926" border="0">
-(Responsive)
-
 
 ## Introduction
 
