@@ -10,7 +10,7 @@
 
 Lola is a responsive full stack E-commerce shopping site, it allows users can browse products by category/color/size and sort them, manage shopping cart and view their orders after payment.
 
-You can register a new account or use below test account </br>
+You can register a new account or use below test account for this site</br>
 test account: kk </br>
 password: 123
 
