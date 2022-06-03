@@ -1,10 +1,10 @@
 # Lola E-commerce Web Application
 
 ### [Live Site] (https://e-commerce-mern-deploy.herokuapp.com/)
-
+### [Watch Demo] (https://youtu.be/i6pFppFDyNE)
 
 <img src="https://i.ibb.co/ZG0BxMM/Screenshot-2022-05-30-234719.png" alt="Screenshot-2022-05-30-234719" border="0">
-### [watch the video demo](https://youtu.be/i6pFppFDyNE)
+
 
 ## Introduction
 
